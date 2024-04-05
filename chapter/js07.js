@@ -76,17 +76,40 @@ document.getElementById("getFile").onchange = function()
 
             unique.sort();
 
-            let ans = document.getElementById("wc_cloud");
-            ans.innerHTML = "";
+            let sol = document.getElementById("wc_cloud");
+            sol.innerHTML = "";
 
             for(let i=0; i<unique.length; i++){
                   let span = document.createElement("span");
                   span.innerHTML = unique[i][0];
                   span.style.fontSize = unique[i][1]/maxcount + "em";
-                  ans.appendChild(span);
+                  sol.appendChild(span);
             }
       }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*--- ----------------------------------------------*/
 /* Array of words to NOT include in the word cloud */
