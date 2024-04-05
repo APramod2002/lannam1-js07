@@ -11,33 +11,82 @@
  */
 
 
+document.getElementById("getFile").onchange = function()
+{
+      let uploaded_file = this.files[0];
+      try{
+            let text = uploaded_file.type.startsWith("text");
+            if(!text) {
+                  throw uploaded_file.name + " is not a text file"; 
+            }
 
+            let reader = new FileReader();
+            reader.readAsText(uploaded_file);
 
+            let doc = document.getElementById("wc_document");
+            reader.onload = function(){
+                  doc.innerHTML = reader.result;
+                  let text = doc.textContent;
+                  display(text);
+            }
+      }
 
+      catch(msg){
+            window.alert(msg);
+      }
 
+      function display(data){
+            data = data.toLowerCase();
+            data = data.trim();
 
+            let reg_exp = /[^a-zA-Z\s]/g;
+            data = data.replace(reg_exp, "");
 
+            for(let i=0; i<stopWords.length; i++){
+                  let stop_reg_exp = new RegExp("\\b"+ stopWords[i]+"\\b", "g");
+                  data = data.replace(stop_reg_exp, "");
+            }
 
+            let words = data.split(/\s+/g);
+            words.sort();
 
+            let unique = [ [words[0],1] ];
 
+            let uniqueindex = 0;
 
+            for(let i=1; i<words.length; i++){
+                  if(words[i] === words[i-1]){
+                        unique[uniqueindex][1]++;
+                  }
+                  else{
+                        uniqueindex++;
+                        unique[uniqueindex] = [words[i], 1];
+                  }
+            }
 
+            unique.sort(sort_func);
 
+            function sort_func(a,b){
+                  return b[1]-a[1];
+            }
 
+            unique = unique.slice(0, 100);
 
+            let maxcount = unique[0][1];
 
+            unique.sort();
 
+            let ans = document.getElementById("wc_cloud");
+            ans.innerHTML = "";
 
-
-
-
-
-
-
-
-
-
-
+            for(let i=0; i<unique.length; i++){
+                  let span = document.createElement("span");
+                  span.innerHTML = unique[i][0];
+                  span.style.fontSize = unique[i][1]/maxcount + "em";
+                  ans.appendChild(span);
+            }
+      }
+};
 
 /*--- ----------------------------------------------*/
 /* Array of words to NOT include in the word cloud */
